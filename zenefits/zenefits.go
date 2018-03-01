@@ -26,6 +26,7 @@ type Client struct {
 	Employments   *EmploymentsService
 	EmployeeBanks *EmployeeBanksService
 	CompanyBanks  *CompanyBanksService
+	Locations     *LocationsService
 }
 
 type service struct {
@@ -58,9 +59,11 @@ func NewClient(httpClient *http.Client) *Client {
 	// service is converted to people service and allocated
 	c.People = (*PeopleService)(&c.common)
 	c.Companies = (*CompaniesService)(&c.common)
+	c.Departments = (*DepartmentsService)(&c.common)
 	c.Employments = (*EmploymentsService)(&c.common)
 	c.EmployeeBanks = (*EmployeeBanksService)(&c.common)
 	c.CompanyBanks = (*CompanyBanksService)(&c.common)
+	c.Locations = (*LocationsService)(&c.common)
 	return c
 }
 
