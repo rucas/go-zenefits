@@ -6,7 +6,7 @@ Go version 1.7 or greater
 ## Usage
 
 ```go
-import "github.com/rucas/go-zenefits/zenefits
+import "github.com/rucas/go-zenefits/zenefits"
 ```
 
 ## Contributing
