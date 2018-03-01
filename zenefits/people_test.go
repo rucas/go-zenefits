@@ -1,7 +1,6 @@
 package zenefits
 
 import (
-	"fmt"
 	"os"
 	"strconv"
 	"testing"
@@ -62,8 +61,8 @@ func TestPeopleService_List_expand(t *testing.T) {
 	tc := oauth2.NewClient(nil, ts)
 	c := NewClient(tc)
 
-	e := PeopleExpansion{[]string{"banks", "location"}}
-	queryparams := &PeopleQueryParams{PeopleExpansion: e}
+	e := Expansion{[]string{"banks", "location"}}
+	queryparams := &PeopleQueryParams{Expansion: e}
 
 	people, resp, err := c.People.List(companyId, queryparams)
 
@@ -78,6 +77,4 @@ func TestPeopleService_List_expand(t *testing.T) {
 	if len(people) == 0 {
 		t.Errorf("PeopleService list is %v, want %v", len(people), err)
 	}
-
-	fmt.Println(people[0].Banks)
 }

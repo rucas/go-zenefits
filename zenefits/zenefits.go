@@ -18,12 +18,25 @@ type Client struct {
 	client    *http.Client
 	BaseURL   *url.URL
 	UserAgent string
-	common    service // Reuse a single struct instead of allocating one for each service on the heap.
-	People    *PeopleService
+
+	common      service // Reuse a single struct instead of allocating one for each service on the heap.
+	People      *PeopleService
+	Companies   *CompaniesService
+	Departments *DepartmentsService
 }
 
 type service struct {
 	client *Client
+}
+
+type Expansion struct {
+	Includes []string `url:"includes,omitempty"`
+}
+
+type Ref struct {
+	Url       string `json:"url"`
+	Object    string `json:"object"`
+	RefObject string `json:"ref_object"`
 }
 
 func NewClient(httpClient *http.Client) *Client {
@@ -41,6 +54,8 @@ func NewClient(httpClient *http.Client) *Client {
 	// (*Point)(p) // p is converted to *Point
 	// service is converted to people service and allocated
 	c.People = (*PeopleService)(&c.common)
+	c.Companies = (*CompaniesService)(&c.common)
+	c.Departments = (*DepartmentsService)(&c.common)
 	return c
 }
 
