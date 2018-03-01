@@ -3,9 +3,11 @@ A Go client library for accessing the [Zenefits API](https://developers.zenefits
 
 Go version 1.7 or greater
 
-## Installation
-
 ## Usage
+
+```go
+import "github.com/rucas/go-zenefits/zenefits
+```
 
 ## Contributing
 
