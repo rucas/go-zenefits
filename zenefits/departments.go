@@ -26,6 +26,8 @@ type DepartmentQueryParams struct {
 	Expansion
 }
 
+// TODO: http://api.zenefits.com/core/departments/{:department_id}
+// TODO: http://api.zenefits.com/core/departments
 func (s *DepartmentsService) List(companyId int, opt *DepartmentQueryParams) ([]*Departments, *http.Response, error) {
 	u := fmt.Sprintf("core/companies/%d/departments", companyId)
 	u, err := AddOptions(u, opt)

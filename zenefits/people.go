@@ -55,6 +55,9 @@ type PeopleQueryParams struct {
 	Expansion
 }
 
+// TODO: http://api.zenefits.com/core/people/{:id}
+// TODO: http://api.zenefits.com/core/people
+
 func (s *PeopleService) List(companyId int, opt *PeopleQueryParams) ([]*People, *http.Response, error) {
 	u := fmt.Sprintf("core/companies/%d/people", companyId)
 	u, err := AddOptions(u, opt)

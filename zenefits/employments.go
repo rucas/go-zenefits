@@ -1,5 +1,10 @@
 package zenefits
 
+import (
+	"fmt"
+	"net/http"
+)
+
 type EmploymentsService service
 
 type Employments struct {
@@ -19,4 +24,30 @@ type Employments struct {
 
 type EmploymentsFilters struct {
 	Person int `url:"person,omitempty"`
+}
+
+type EmploymentQueryParams struct {
+	EmploymentsFilters
+	Expansion
+}
+
+// TODO: https://api.zenefits.com/core/employments/{:employment_id}
+
+func (s *EmploymentsService) List(personId int, opt *EmploymentQueryParams) ([]*Employments, *http.Response, error) {
+	u := fmt.Sprintf("core/people/%d/employments", personId)
+	u, err := AddOptions(u, opt)
+	req, err := s.client.NewRequest("GET", u, nil)
+
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var employments []*Employments
+	resp, err := s.client.Do(req, &employments)
+
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return employments, resp, nil
 }

@@ -36,6 +36,8 @@ type CompaniesQueryParams struct {
 	Expansion
 }
 
+
+// TODO: http://api.zenefits.com/core/companies/{:id}
 func (s *CompaniesService) List(opt *CompaniesQueryParams) ([]*Companies, *http.Response, error) {
 	u, err := AddOptions("core/companies", opt)
 	req, err := s.client.NewRequest("GET", u, nil)

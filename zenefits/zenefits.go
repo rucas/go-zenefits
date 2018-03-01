@@ -19,10 +19,13 @@ type Client struct {
 	BaseURL   *url.URL
 	UserAgent string
 
-	common      service // Reuse a single struct instead of allocating one for each service on the heap.
-	People      *PeopleService
-	Companies   *CompaniesService
-	Departments *DepartmentsService
+	common        service // Reuse a single struct instead of allocating one for each service on the heap.
+	People        *PeopleService
+	Companies     *CompaniesService
+	Departments   *DepartmentsService
+	Employments   *EmploymentsService
+	EmployeeBanks *EmployeeBanksService
+	CompanyBanks  *CompanyBanksService
 }
 
 type service struct {
@@ -55,7 +58,9 @@ func NewClient(httpClient *http.Client) *Client {
 	// service is converted to people service and allocated
 	c.People = (*PeopleService)(&c.common)
 	c.Companies = (*CompaniesService)(&c.common)
-	c.Departments = (*DepartmentsService)(&c.common)
+	c.Employments = (*EmploymentsService)(&c.common)
+	c.EmployeeBanks = (*EmployeeBanksService)(&c.common)
+	c.CompanyBanks = (*CompanyBanksService)(&c.common)
 	return c
 }
 
