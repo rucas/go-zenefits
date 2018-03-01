@@ -11,6 +11,8 @@ import "github.com/rucas/go-zenefits/zenefits
 
 ## Contributing
 
+:wave: :point_right: Check out the [Contributing](CONTRIBUTING.md) doc to get you started.
+
 ## License
 
 This library is distributed under the MIT license found in the [LICENSE](LICENSE) file
