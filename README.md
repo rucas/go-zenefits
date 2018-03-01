@@ -10,3 +10,5 @@ Go version 1.7 or greater
 ## Contributing
 
 ## License
+
+This library is distributed under the MIT license found in the [LICENSE](LICENSE) file
