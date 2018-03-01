@@ -8,3 +8,5 @@ Go version 1.7 or greater
 ## Usage
 
 ## Contributing
+
+## License
