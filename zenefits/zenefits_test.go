@@ -45,6 +45,14 @@ func TestZenefits_NewRequest(t *testing.T) {
 	}
 }
 
+func TestZenefits_addPaginationBody(t *testing.T) {
+	var people []*People
+	b := addPaginationBody(people)
+	if !reflect.DeepEqual(b.Page.Data, people) {
+		t.Errorf("PaginationBody page data body = %v, want = %v", b.Page.Data, people)
+	}
+}
+
 func TestZenefits_Do(t *testing.T) {
 	c := NewClient(nil)
 	r, _ := c.NewRequest("GET", "/core/me", nil)
@@ -59,7 +67,7 @@ func TestZenefits_Do(t *testing.T) {
 	}
 }
 
-func TestZenefits_AddOptions(t *testing.T) {
+func TestZenefits_addOptions(t *testing.T) {
 	type queryparams struct {
 		Real bool   `url:"real,omitempty"`
 		Id   int    `url:"id,omitempty"`
@@ -67,14 +75,14 @@ func TestZenefits_AddOptions(t *testing.T) {
 	}
 	q := queryparams{true, 34, "me"}
 
-	got, err := AddOptions("https://thelucas.blog", q)
+	got, err := addOptions("https://thelucas.blog", q)
 	want := "https://thelucas.blog?help=me&id=34&real=true"
 
 	if err != nil {
-		t.Errorf("AddOptions got error %v", err)
+		t.Errorf("addOptions got error %v", err)
 	}
 
 	if got != want {
-		t.Errorf("AddOptions is %v, want %v", got, want)
+		t.Errorf("addOptions is %v, want %v", got, want)
 	}
 }

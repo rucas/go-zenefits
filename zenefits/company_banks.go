@@ -24,22 +24,27 @@ type CompanyBanksQueryParams struct {
 	Expansion
 }
 
-// TODO: http://api.zenefits.com/core/company_banks/{:bank_id}
+// TODO: GET http://api.zenefits.com/core/company_banks/{:bank_id}
+
+// The following endpoint gives all the information for all banks across
+// all companies
+// (note access tokens are unique per company, so this will be the same as the main endpoint)
 // TODO: http://api.zenefits.com/core/company_banks
 
 func (s *CompanyBanksService) List(companyId int, opt *CompanyBanksQueryParams) ([]*CompanyBanks, *http.Response, error) {
 	u := fmt.Sprintf("core/companies/%d/company_banks", companyId)
-	u, err := AddOptions(u, opt)
+	u, err := addOptions(u, opt)
 	req, err := s.client.NewRequest("GET", u, nil)
 	if err != nil {
 		return nil, nil, err
 	}
-	var companyBanks []*CompanyBanks
 
-	resp, err := s.client.Do(req, &companyBanks)
+	var banks []*CompanyBanks
+	b := addPaginationBody(&banks)
+	resp, err := s.client.Do(req, &b)
 
 	if err != nil {
 		return nil, resp, err
 	}
-	return companyBanks, resp, nil
+	return banks, resp, nil
 }

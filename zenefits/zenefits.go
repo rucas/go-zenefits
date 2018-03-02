@@ -37,10 +37,30 @@ type Expansion struct {
 	Includes []string `url:"includes,omitempty"`
 }
 
+type Pagination struct {
+	Limit         int `url:"limit,omitempty"`
+	StartingAfter int `url:"starting_after,omitempty"`
+	EndingBefore  int `url:"ending_before,omitempty"`
+}
+
 type Ref struct {
 	Url       string `json:"url"`
 	Object    string `json:"object"`
 	RefObject string `json:"ref_object"`
+}
+
+type Page struct {
+	Url     string      `json:"url"`
+	NextUrl string      `json:"next_url"`
+	Object  string      `json:"object"`
+	Data    interface{} `json:"data"`
+}
+
+type MetaResponse struct {
+	Status int    `json:"status"`
+	Object string `json:"object"`
+	Page   Page   `json:"data"`
+	//Data   interface{} `json:"data"`
 }
 
 func NewClient(httpClient *http.Client) *Client {
@@ -88,25 +108,19 @@ func (c *Client) Do(req *http.Request, v interface{}) (*http.Response, error) {
 	}
 	defer resp.Body.Close()
 
-	type Page struct {
-		Url     string      `json:"url"`
-		NextUrl string      `json:"next_url"`
-		Object  string      `json:"object"`
-		Data    interface{} `json:"data"`
-	}
-
-	type MetaResponse struct {
-		Status int    `json:"status"`
-		Object string `json:"object"`
-		Page   Page   `json:"data"`
-	}
-
-	valium := MetaResponse{Page: Page{Data: v}}
-	err = json.NewDecoder(resp.Body).Decode(&valium)
+	//valium := MetaResponse{Page: Page{Data: v}}
+	//err = json.NewDecoder(resp.Body).Decode(&valium)
+	err = json.NewDecoder(resp.Body).Decode(v)
 	return resp, err
 }
 
-func AddOptions(s string, opt interface{}) (string, error) {
+func addPaginationBody(v interface{}) MetaResponse {
+	return MetaResponse{
+		Page: Page{Data: v},
+	}
+}
+
+func addOptions(s string, opt interface{}) (string, error) {
 	v, err := query.Values(opt)
 
 	// TODO: Check if it is a pointer...

@@ -28,24 +28,27 @@ type EmployeeBanksQueryParams struct {
 	Expansion
 }
 
-// TODO: http://api.zenefits.com/core/banks/{:bank_id}
-// TODO: http://api.zenefits.com/core/banks
+// TODO: GET http://api.zenefits.com/core/banks/{:bank_id}
+
+// The following endpoint gives all the information for all banks across all people
+// TODO: ListALL http://api.zenefits.com/core/banks
 
 func (s *EmployeeBanksService) List(personId int, opt *EmployeeBanksQueryParams) ([]*EmployeeBanks, *http.Response, error) {
 	u := fmt.Sprintf("core/people/%d/banks", personId)
-	u, err := AddOptions(u, opt)
+	u, err := addOptions(u, opt)
 	req, err := s.client.NewRequest("GET", u, nil)
 
 	if err != nil {
 		return nil, nil, err
 	}
-	var employeeBanks []*EmployeeBanks
 
-	resp, err := s.client.Do(req, &employeeBanks)
+	var banks []*EmployeeBanks
+	b := addPaginationBody(&banks)
+	resp, err := s.client.Do(req, &b)
 
 	if err != nil {
 		return nil, resp, err
 	}
 
-	return employeeBanks, resp, nil
+	return banks, resp, nil
 }

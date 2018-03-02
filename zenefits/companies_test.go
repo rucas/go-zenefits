@@ -6,7 +6,7 @@ import (
 	"golang.org/x/oauth2"
 )
 
-func TestCompaniesService_ListAll(t *testing.T) {
+func TestCompaniesService_List(t *testing.T) {
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: accessToken})
 	tc := oauth2.NewClient(nil, ts)
 	c := NewClient(tc)
@@ -29,7 +29,7 @@ func TestCompaniesService_ListAll(t *testing.T) {
 	}
 }
 
-func TestCompaniesService_ListAll_specificCompanies(t *testing.T) {
+func TestCompaniesService_List_specificCompanies(t *testing.T) {
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: accessToken})
 	tc := oauth2.NewClient(nil, ts)
 	c := NewClient(tc)

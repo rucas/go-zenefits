@@ -36,16 +36,21 @@ type LocationQueryParams struct {
 	Expansion
 }
 
+// TODO: http://api.zenefits.com/core/locations/{:location_id}
+// TODO: http://api.zenefits.com/core/locations
+
 func (s *LocationsService) List(companyId int, opt *LocationQueryParams) ([]*Locations, *http.Response, error) {
 	u := fmt.Sprintf("core/companies/%d/locations", companyId)
-	u, err := AddOptions(u, opt)
+	u, err := addOptions(u, opt)
 	req, err := s.client.NewRequest("GET", u, nil)
 
 	if err != nil {
 		return nil, nil, err
 	}
+
 	var locations []*Locations
-	resp, err := s.client.Do(req, &locations)
+	b := addPaginationBody(&locations)
+	resp, err := s.client.Do(req, &b)
 
 	if err != nil {
 		return nil, resp, err

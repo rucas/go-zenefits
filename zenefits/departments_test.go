@@ -6,7 +6,7 @@ import (
 	"golang.org/x/oauth2"
 )
 
-func TestDepartmentsService_ListAll(t *testing.T) {
+func TestDepartmentsService_List(t *testing.T) {
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: accessToken})
 	tc := oauth2.NewClient(nil, ts)
 	c := NewClient(tc)

@@ -78,3 +78,23 @@ func TestPeopleService_List_expand(t *testing.T) {
 		t.Errorf("PeopleService list is %v, want %v", len(people), err)
 	}
 }
+
+func TestPeopleService_Get(t *testing.T) {
+	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: accessToken})
+	tc := oauth2.NewClient(nil, ts)
+	c := NewClient(tc)
+
+	people, resp, err := c.People.Get(166216, nil)
+
+	if resp.StatusCode != 200 {
+		t.Errorf("PeopleService list is %v, want %v", people, err)
+	}
+
+	/*if err != nil {
+		t.Errorf("PeopleService list is %v, want %v", people, err)
+	}*/
+
+	/*if len(people) == 0 {
+		t.Errorf("PeopleService list is %v, want %v", len(people), err)
+	}*/
+}

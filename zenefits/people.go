@@ -55,12 +55,15 @@ type PeopleQueryParams struct {
 	Expansion
 }
 
-// TODO: http://api.zenefits.com/core/people/{:id}
-// TODO: http://api.zenefits.com/core/people
+// TODO: GET http://api.zenefits.com/core/people/{:id}
+
+// TODO: ListAll
+// Once zenefits changes their api to one token per multiple companies
+// http://api.zenefits.com/core/people
 
 func (s *PeopleService) List(companyId int, opt *PeopleQueryParams) ([]*People, *http.Response, error) {
 	u := fmt.Sprintf("core/companies/%d/people", companyId)
-	u, err := AddOptions(u, opt)
+	u, err := addOptions(u, opt)
 	req, err := s.client.NewRequest("GET", u, nil)
 
 	if err != nil {
@@ -68,6 +71,26 @@ func (s *PeopleService) List(companyId int, opt *PeopleQueryParams) ([]*People, 
 	}
 
 	var people []*People
+	b := addPaginationBody(&people)
+	resp, err := s.client.Do(req, &b)
+
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return people, resp, nil
+}
+
+func (s *PeopleService) Get(personId int, opt *PeopleQueryParams) (*People, *http.Response, error) {
+	u := fmt.Sprintf("core/people/%d", personId)
+	u, err := addOptions(u, opt)
+	req, err := s.client.NewRequest("GET", u, nil)
+
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var people *People
 	resp, err := s.client.Do(req, &people)
 
 	if err != nil {

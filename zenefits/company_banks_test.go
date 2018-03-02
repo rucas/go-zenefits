@@ -52,7 +52,7 @@ func TestCompanyBanksService_List_specificCompany(t *testing.T) {
 }
 
 // TODO: update this test to make sure company is expanded
-func TestCompaniesService_ListAll_expand(t *testing.T) {
+func TestCompanyBanksService_List_expand(t *testing.T) {
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: accessToken})
 	tc := oauth2.NewClient(nil, ts)
 	c := NewClient(tc)

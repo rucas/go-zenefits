@@ -35,7 +35,7 @@ type EmploymentQueryParams struct {
 
 func (s *EmploymentsService) List(personId int, opt *EmploymentQueryParams) ([]*Employments, *http.Response, error) {
 	u := fmt.Sprintf("core/people/%d/employments", personId)
-	u, err := AddOptions(u, opt)
+	u, err := addOptions(u, opt)
 	req, err := s.client.NewRequest("GET", u, nil)
 
 	if err != nil {
@@ -43,7 +43,8 @@ func (s *EmploymentsService) List(personId int, opt *EmploymentQueryParams) ([]*
 	}
 
 	var employments []*Employments
-	resp, err := s.client.Do(req, &employments)
+	b := addPaginationBody(&employments)
+	resp, err := s.client.Do(req, &b)
 
 	if err != nil {
 		return nil, resp, err
