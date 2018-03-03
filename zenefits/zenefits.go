@@ -27,6 +27,7 @@ type Client struct {
 	EmployeeBanks *EmployeeBanksService
 	CompanyBanks  *CompanyBanksService
 	Locations     *LocationsService
+	Me            *MeService
 }
 
 type service struct {
@@ -60,7 +61,7 @@ type MetaResponse struct {
 	Status int    `json:"status"`
 	Object string `json:"object"`
 	Page   Page   `json:"data"`
-	//Data   interface{} `json:"data"`
+	// Data   interface{} `json:"data"`
 }
 
 func NewClient(httpClient *http.Client) *Client {
@@ -84,6 +85,7 @@ func NewClient(httpClient *http.Client) *Client {
 	c.EmployeeBanks = (*EmployeeBanksService)(&c.common)
 	c.CompanyBanks = (*CompanyBanksService)(&c.common)
 	c.Locations = (*LocationsService)(&c.common)
+	c.Me = (*MeService)(&c.common)
 	return c
 }
 
