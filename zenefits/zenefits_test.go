@@ -3,8 +3,15 @@ package zenefits
 
 import (
 	"io"
+	"os"
 	"reflect"
+	"strconv"
 	"testing"
+)
+
+var (
+	accessToken  = os.Getenv("ZENEFITS_API_KEY")
+	companyId, _ = strconv.Atoi(os.Getenv("ZENEFITS_COMPANY_ID"))
 )
 
 func TestZenefits_NewClient(t *testing.T) {
@@ -86,3 +93,7 @@ func TestZenefits_addOptions(t *testing.T) {
 		t.Errorf("addOptions is %v, want %v", got, want)
 	}
 }
+
+/*func TestZenefits_addMetaRefs(t *testing.T) {
+	var companies []*Companies
+}*/

@@ -24,17 +24,18 @@ func TestMeService_Get(t *testing.T) {
 	if me == nil {
 		t.Errorf("MeService me is %v, want %v", me, "NOT NIL")
 	}
+
+	if got, want := me.Company.Object, "/meta/ref/detail"; got != want {
+		t.Errorf("MeService list is %v, want %v", got, want)
+	}
 }
 
-// TODO: update this test to make sure banks and location is expanded
 func TestMeService_Get_expand(t *testing.T) {
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: accessToken})
 	tc := oauth2.NewClient(nil, ts)
 	c := NewClient(tc)
 
-	qs := &MeQueryParams{
-		Expansion{[]string{"company"}},
-	}
+	qs := &MeQueryParams{Includes: []string{"company"}}
 
 	me, resp, err := c.Me.Get(qs)
 
@@ -48,5 +49,9 @@ func TestMeService_Get_expand(t *testing.T) {
 
 	if me == nil {
 		t.Errorf("MeService me is %v, want %v", me, "NOT NIL")
+	}
+
+	if got, want := me.Company.Object, "/core/companies"; got != want {
+		t.Errorf("MeService list is %v, want %v", got, want)
 	}
 }

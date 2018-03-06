@@ -34,36 +34,6 @@ type service struct {
 	client *Client
 }
 
-type Expansion struct {
-	Includes []string `url:"includes,omitempty"`
-}
-
-type Pagination struct {
-	Limit         int `url:"limit,omitempty"`
-	StartingAfter int `url:"starting_after,omitempty"`
-	EndingBefore  int `url:"ending_before,omitempty"`
-}
-
-type Ref struct {
-	Url       string `json:"url"`
-	Object    string `json:"object"`
-	RefObject string `json:"ref_object"`
-}
-
-type Page struct {
-	Url     string      `json:"url"`
-	NextUrl string      `json:"next_url"`
-	Object  string      `json:"object"`
-	Data    interface{} `json:"data"`
-}
-
-type MetaResponse struct {
-	Status int    `json:"status"`
-	Object string `json:"object"`
-	Page   Page   `json:"data"`
-	// Data   interface{} `json:"data"`
-}
-
 func NewClient(httpClient *http.Client) *Client {
 	if httpClient == nil {
 		httpClient = http.DefaultClient
@@ -78,14 +48,14 @@ func NewClient(httpClient *http.Client) *Client {
 
 	// (*Point)(p) // p is converted to *Point
 	// service is converted to people service and allocated
-	c.People = (*PeopleService)(&c.common)
 	c.Companies = (*CompaniesService)(&c.common)
-	c.Departments = (*DepartmentsService)(&c.common)
-	c.Employments = (*EmploymentsService)(&c.common)
-	c.EmployeeBanks = (*EmployeeBanksService)(&c.common)
 	c.CompanyBanks = (*CompanyBanksService)(&c.common)
+	c.Departments = (*DepartmentsService)(&c.common)
+	c.EmployeeBanks = (*EmployeeBanksService)(&c.common)
+	c.Employments = (*EmploymentsService)(&c.common)
 	c.Locations = (*LocationsService)(&c.common)
 	c.Me = (*MeService)(&c.common)
+	c.People = (*PeopleService)(&c.common)
 	return c
 }
 
@@ -110,15 +80,13 @@ func (c *Client) Do(req *http.Request, v interface{}) (*http.Response, error) {
 	}
 	defer resp.Body.Close()
 
-	//valium := MetaResponse{Page: Page{Data: v}}
-	//err = json.NewDecoder(resp.Body).Decode(&valium)
 	err = json.NewDecoder(resp.Body).Decode(v)
 	return resp, err
 }
 
 func addPaginationBody(v interface{}) MetaResponse {
 	return MetaResponse{
-		Page: Page{Data: v},
+		Page: MetaList{Data: v},
 	}
 }
 

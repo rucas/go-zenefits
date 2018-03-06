@@ -12,28 +12,25 @@ import (
 type LocationsService service
 
 type Locations struct {
-	City    string `json:"city"`
-	Name    string `json:"name"`
-	People  Ref    `json:"people"`
-	Url     string `json:"url"`
-	Street1 string `json:"street1"`
-	Street2 string `json:"street2"`
-	Object  string `json:"object"`
-	Id      string `json:"id"`
-	Phone   string `json:"phone"`
-	State   string `json:"state"`
-	Country string `json:"country"`
-	Company Ref    `json:"company"`
-}
-
-type LocationsFilters struct {
-	Company int    `url:"company,omitempty"`
-	Name    string `url:"name,omitempty"`
+	City      string    `json:"city"`
+	Company   Companies `json:"company"`
+	Country   string    `json:"country"`
+	Id        string    `json:"id"`
+	Name      string    `json:"name"`
+	Object    string    `json:"object"`
+	People    MetaRef   `json:"people"`
+	Phone     string    `json:"phone"`
+	RefObject string    `json:"ref_object"`
+	State     string    `json:"state"`
+	Street1   string    `json:"street1"`
+	Street2   string    `json:"street2"`
+	Url       string    `json:"url"`
 }
 
 type LocationQueryParams struct {
-	LocationsFilters
-	Expansion
+	Company  int      `url:"company,omitempty"`
+	Includes []string `url:"includes,omitempty"`
+	Name     string   `url:"name,omitempty"`
 }
 
 // TODO: http://api.zenefits.com/core/locations/{:location_id}

@@ -8,20 +8,17 @@ import (
 type CompanyBanksService service
 
 type CompanyBanks struct {
-	AccountNumber string `json:"account_number"`
-	BankName      string `json:"bank_name"`
-	Company       Ref    `json:"company"`
-	Id            string `json:"id"`
-	RoutingNumber string `json:"routing_number"`
-}
-
-type CompanyBanksFilters struct {
-	Company int `url:"company,omitempty"`
+	AccountNumber string     `json:"account_number"`
+	BankName      string     `json:"bank_name"`
+	Company       CompanyRef `json:"company"`
+	Id            string     `json:"id"`
+	RefObject     string     `json:"ref_object"`
+	RoutingNumber string     `json:"routing_number"`
 }
 
 type CompanyBanksQueryParams struct {
-	CompanyBanksFilters
-	Expansion
+	Company  int      `url:"company,omitempty"`
+	Includes []string `url:"includes,omitempty"`
 }
 
 // TODO: GET http://api.zenefits.com/core/company_banks/{:bank_id}

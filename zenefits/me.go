@@ -7,18 +7,20 @@ import (
 
 type MeService service
 
+//TODO: RefObject string    `json:"ref_object"`
+
 type Me struct {
-	Scopes      []string  `json:"scopes"`
-	Object      string    `json:"object"`
-	Url         string    `json:"url"`
-	Company     Ref       `json:"company"`
+	Company     Companies `json:"company"`
 	Expires     time.Time `json:"expires"`
-	Person      Ref       `json:"person"`
+	Object      string    `json:"object"`
+	Person      People    `json:"person"`
+	Scopes      []string  `json:"scopes"`
 	Uninstalled bool      `json:"uninstalled"`
+	Url         string    `json:"url"`
 }
 
 type MeQueryParams struct {
-	Expansion
+	Includes []string `url:"includes,omitempty"`
 }
 
 func (s *MeService) Get(opt *MeQueryParams) (*Me, *http.Response, error) {

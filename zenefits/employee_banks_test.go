@@ -6,7 +6,7 @@ import (
 	"golang.org/x/oauth2"
 )
 
-func TestEmployeeBanksService_ListAll(t *testing.T) {
+func TestEmployeeBanksService_List(t *testing.T) {
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: accessToken})
 	tc := oauth2.NewClient(nil, ts)
 	c := NewClient(tc)
@@ -24,6 +24,10 @@ func TestEmployeeBanksService_ListAll(t *testing.T) {
 	if len(employeeBanks) == 0 {
 		t.Errorf("EmployeeBankservice list is %v, want %v", len(employeeBanks), err)
 	}
+
+	if got, want := employeeBanks[0].Person.Object, "/meta/ref/detail"; got != want {
+		t.Errorf("EmployeeBankservice list is %v, want %v", got, want)
+	}
 }
 
 func TestEmployeeBanksService_List_specificEmployee(t *testing.T) {
@@ -31,10 +35,7 @@ func TestEmployeeBanksService_List_specificEmployee(t *testing.T) {
 	tc := oauth2.NewClient(nil, ts)
 	c := NewClient(tc)
 
-	qs := &EmployeeBanksQueryParams{
-		EmployeeBanksFilters{1851863},
-		Expansion{},
-	}
+	qs := &EmployeeBanksQueryParams{1851863, nil}
 
 	employeeBanks, resp, err := c.EmployeeBanks.List(1851863, qs)
 
@@ -51,17 +52,12 @@ func TestEmployeeBanksService_List_specificEmployee(t *testing.T) {
 	}
 }
 
-// TODO: update this test to make sure company is expanded
 func TestEmployeeBanksService_List_expand(t *testing.T) {
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: accessToken})
 	tc := oauth2.NewClient(nil, ts)
 	c := NewClient(tc)
 
-	qs := &EmployeeBanksQueryParams{
-		EmployeeBanksFilters{},
-		Expansion{[]string{"person"}},
-	}
-
+	qs := &EmployeeBanksQueryParams{Includes: []string{"person"}}
 	employeeBanks, resp, err := c.EmployeeBanks.List(1851863, qs)
 
 	if resp.StatusCode != 200 {
@@ -74,5 +70,9 @@ func TestEmployeeBanksService_List_expand(t *testing.T) {
 
 	if len(employeeBanks) == 0 {
 		t.Errorf("EmployeeBankservice list is %v, want %v", len(employeeBanks), err)
+	}
+
+	if got, want := employeeBanks[0].Person.Object, "/core/people"; got != want {
+		t.Errorf("EmployeeBankservice list is %v, want %v", got, want)
 	}
 }

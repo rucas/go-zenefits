@@ -31,10 +31,7 @@ func TestCompanyBanksService_List_specificCompany(t *testing.T) {
 	tc := oauth2.NewClient(nil, ts)
 	c := NewClient(tc)
 
-	qs := &CompanyBanksQueryParams{
-		CompanyBanksFilters{1234},
-		Expansion{},
-	}
+	qs := &CompanyBanksQueryParams{Company: 1234}
 
 	companyBanks, resp, err := c.CompanyBanks.List(companyId, qs)
 
@@ -51,15 +48,13 @@ func TestCompanyBanksService_List_specificCompany(t *testing.T) {
 	}
 }
 
-// TODO: update this test to make sure company is expanded
 func TestCompanyBanksService_List_expand(t *testing.T) {
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: accessToken})
 	tc := oauth2.NewClient(nil, ts)
 	c := NewClient(tc)
 
 	qs := &CompanyBanksQueryParams{
-		CompanyBanksFilters{},
-		Expansion{[]string{"company"}},
+		Includes: []string{"company"},
 	}
 
 	companyBanks, resp, err := c.CompanyBanks.List(companyId, qs)

@@ -8,22 +8,19 @@ import (
 type DepartmentsService service
 
 type Departments struct {
-	Name    string `json:"name"`
-	People  Ref    `json:"people"`
-	Url     string `json:"url"`
-	Company Ref    `json:"company"`
-	Object  string `json:"object"`
-	Id      string `json:"id"`
-}
-
-type DepartmentsFilters struct {
-	Company int    `url:"company,omitempty"`
-	name    string `url:"name,omitempty"`
+	Company   Companies `json:"company"`
+	Id        string    `json:"id"`
+	Name      string    `json:"name"`
+	Object    string    `json:"object"`
+	People    MetaRef   `json:"people"`
+	RefObject string    `json:"ref_object"`
+	Url       string    `json:"url"`
 }
 
 type DepartmentQueryParams struct {
-	DepartmentsFilters
-	Expansion
+	Company  int      `url:"company,omitempty"`
+	Name     string   `url:"name,omitempty"`
+	Includes []string `url:"includes,omitempty"`
 }
 
 // TODO: GET http://api.zenefits.com/core/departments/{:department_id}

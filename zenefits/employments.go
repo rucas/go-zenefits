@@ -8,27 +8,24 @@ import (
 type EmploymentsService service
 
 type Employments struct {
-	Object              string `json:"object"`
-	Person              Ref    `json:"person"`
-	Url                 string `json:"url"`
+	AnnualSalary        string `json:"annual_salary"`
 	CompType            string `json:"comp_type"`
 	EmploymentType      string `json:"employment_type"`
-	PayRate             string `json:"pay_rate"` // TODO: not sure if this is null all the time
-	TerminationType     string `json:"termination_type"`
-	AnnualSalary        string `json:"annual_salary"`
-	TerminationDate     string `json:"termination_date"`
 	HireDate            string `json:"hire_date"`
 	Id                  string `json:"id"`
+	Object              string `json:"object"`
+	PayRate             string `json:"pay_rate"` // TODO: not sure if this is null all the time
+	Person              People `json:"person"`
+	RefObject           string `json:"ref_object"`
+	TerminationDate     string `json:"termination_date"`
+	TerminationType     string `json:"termination_type"`
+	Url                 string `json:"url"`
 	WorkingHoursPerWeek string `json:"working_hours_per_week"`
 }
 
-type EmploymentsFilters struct {
-	Person int `url:"person,omitempty"`
-}
-
 type EmploymentQueryParams struct {
-	EmploymentsFilters
-	Expansion
+	Person   int      `url:"person,omitempty"`
+	Includes []string `url:"includes,omitempty"`
 }
 
 // TODO: https://api.zenefits.com/core/employments/{:employment_id}

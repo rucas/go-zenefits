@@ -8,24 +8,21 @@ import (
 type EmployeeBanksService service
 
 type EmployeeBanks struct {
-	RoutingNumber string `json:"routing_number"`
-	BankName      string `json:"bank_name"`
-	AccountType   string `json:"account_type"`
-	Url           string `json:"url"`
-	Object        string `json:"object"`
-	Person        Ref    `json:"person"`
 	AccountNumber string `json:"account_number"`
-	IsVerified    bool   `json:"is_verified"`
+	AccountType   string `json:"account_type"`
+	BankName      string `json:"bank_name"`
 	Id            string `json:"id"`
-}
-
-type EmployeeBanksFilters struct {
-	Person int `url:"person,omitempty"`
+	IsVerified    bool   `json:"is_verified"`
+	Object        string `json:"object"`
+	Person        People `json:"person"`
+	RefObject     string `json:"ref_object"`
+	RoutingNumber string `json:"routing_number"`
+	Url           string `json:"url"`
 }
 
 type EmployeeBanksQueryParams struct {
-	EmployeeBanksFilters
-	Expansion
+	Person   int      `url:"person,omitempty"`
+	Includes []string `url:"includes,omitempty"`
 }
 
 // TODO: GET http://api.zenefits.com/core/banks/{:bank_id}
