@@ -56,7 +56,7 @@ type PeopleQueryParams struct {
 	Department    int      `url:"department,omitempty"`
 	EndingBefore  int      `url:"ending_before,omitempty"`
 	FirstName     string   `url:"first_name,omitempty"`
-	Includes      []string `url:"includes,omitempty"`
+	Includes      []string `url:"includes,space,omitempty"`
 	LastName      string   `url:"lastname,omitempty"`
 	Limit         int      `url:"limit,omitempty"`
 	Location      int      `url:"location,omitempty"`

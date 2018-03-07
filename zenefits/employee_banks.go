@@ -21,7 +21,7 @@ type EmployeeBanks struct {
 
 type EmployeeBanksQueryParams struct {
 	EndingBefore  int      `url:"ending_before,omitempty"`
-	Includes      []string `url:"includes,omitempty"`
+	Includes      []string `url:"includes,space,omitempty"`
 	Limit         int      `url:"limit,omitempty"`
 	Person        int      `url:"person,omitempty"`
 	StartingAfter int      `url:"starting_after,omitempty"`

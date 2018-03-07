@@ -82,9 +82,9 @@ func TestPeopleService_List_expand(t *testing.T) {
 	tc := oauth2.NewClient(nil, ts)
 	c := NewClient(tc)
 
-	queryparams := &PeopleQueryParams{Includes: []string{"location"}}
+	qs := &PeopleQueryParams{Includes: []string{"location"}}
 
-	people, resp, err := c.People.List(companyId, queryparams)
+	people, resp, err := c.People.List(companyId, qs)
 
 	if resp.StatusCode != 200 {
 		t.Errorf("PeopleService list is %v, want %v", len(people), err)
@@ -98,8 +98,42 @@ func TestPeopleService_List_expand(t *testing.T) {
 		t.Errorf("PeopleService list is %v, want %v", len(people), err)
 	}
 
-	// TODO: Should perform this check for all expands
 	if got, want := people[0].Location.RefObject, ""; got != want {
 		t.Errorf("PeopleService list is %v, want %v", got, want)
+	}
+}
+
+func TestPeopleService_List_expandMultiple(t *testing.T) {
+	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: accessToken})
+	tc := oauth2.NewClient(nil, ts)
+	c := NewClient(tc)
+
+	qs := &PeopleQueryParams{
+		FirstName: "lucas",
+		Includes:  []string{"employments", "manager.department"}}
+	people, resp, err := c.People.List(companyId, qs)
+
+	if resp.StatusCode != 200 {
+		t.Errorf("PeopleService list is %v, want %v", len(people), err)
+	}
+
+	if err != nil {
+		t.Errorf("PeopleService list is %v, want %v", len(people), err)
+	}
+
+	if len(people) == 0 {
+		t.Errorf("PeopleService list is %v, want %v", len(people), err)
+	}
+
+	if got, want := people[0].Location.RefObject, "/core/locations"; got != want {
+		t.Errorf("PeopleService list is %v, want %v", got, want)
+	}
+
+	if got, want := people[0].Employments.RefObject, ""; got != want {
+		t.Errorf("people[0].EmploymentsRef.RefObject is %v, want %v", got, want)
+	}
+
+	if got, want := people[0].Manager.Department.RefObject, ""; got != want {
+		t.Errorf("people[0].Manager.Department is %v, want %v", got, want)
 	}
 }

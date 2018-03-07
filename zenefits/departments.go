@@ -19,7 +19,7 @@ type Departments struct {
 type DepartmentQueryParams struct {
 	Company       int      `url:"company,omitempty"`
 	EndingBefore  int      `url:"ending_before,omitempty"`
-	Includes      []string `url:"includes,omitempty"`
+	Includes      []string `url:"includes,space,omitempty"`
 	Limit         int      `url:"limit,omitempty"`
 	Name          string   `url:"name,omitempty"`
 	StartingAfter int      `url:"starting_after,omitempty"`

@@ -13,7 +13,7 @@ type Employments struct {
 	HireDate            string `json:"hire_date"`
 	Id                  string `json:"id"`
 	Object              string `json:"object"`
-	PayRate             string `json:"pay_rate"` // TODO: not sure if this is null all the time
+	PayRate             string `json:"pay_rate"`
 	Person              People `json:"person"`
 	RefObject           string `json:"ref_object"`
 	TerminationDate     string `json:"termination_date"`
@@ -24,7 +24,7 @@ type Employments struct {
 
 type EmploymentQueryParams struct {
 	EndingBefore  int      `url:"ending_before,omitempty"`
-	Includes      []string `url:"includes,omitempty"`
+	Includes      []string `url:"includes,space,omitempty"`
 	Limit         int      `url:"limit,omitempty"`
 	Person        int      `url:"person,omitempty"`
 	StartingAfter int      `url:"starting_after,omitempty"`

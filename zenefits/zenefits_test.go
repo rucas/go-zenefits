@@ -52,7 +52,7 @@ func TestZenefits_NewRequest(t *testing.T) {
 	}
 }
 
-func TestZenefits_addPaginationBody(t *testing.T) {
+func TestZenefits_addMeta(t *testing.T) {
 	var people []*People
 	b := addMeta(people)
 	if !reflect.DeepEqual(b.Page.Data, people) {
@@ -76,14 +76,15 @@ func TestZenefits_Do(t *testing.T) {
 
 func TestZenefits_addOptions(t *testing.T) {
 	type queryparams struct {
-		Real bool   `url:"real,omitempty"`
-		Id   int    `url:"id,omitempty"`
-		Help string `url:"help,omitempty"`
+		Real     bool     `url:"real,omitempty"`
+		Id       int      `url:"id,omitempty"`
+		Help     string   `url:"help,omitempty"`
+		Includes []string `url:"includes,space,omitempty"`
 	}
-	q := queryparams{true, 34, "me"}
+	q := queryparams{true, 34, "me", []string{"foo", "manager.department"}}
 
 	got, err := addOptions("https://thelucas.blog", q)
-	want := "https://thelucas.blog?help=me&id=34&real=true"
+	want := "https://thelucas.blog?help=me&id=34&includes=foo+manager.department&real=true"
 
 	if err != nil {
 		t.Errorf("addOptions got error %v", err)
@@ -93,7 +94,3 @@ func TestZenefits_addOptions(t *testing.T) {
 		t.Errorf("addOptions is %v, want %v", got, want)
 	}
 }
-
-/*func TestZenefits_addMetaRefs(t *testing.T) {
-	var companies []*Companies
-}*/

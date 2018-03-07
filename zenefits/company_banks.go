@@ -18,7 +18,7 @@ type CompanyBanks struct {
 type CompanyBanksQueryParams struct {
 	Company       int      `url:"company,omitempty"`
 	EndingBefore  int      `url:"ending_before,omitempty"`
-	Includes      []string `url:"includes,omitempty"`
+	Includes      []string `url:"includes,space,omitempty"`
 	Limit         int      `url:"limit,omitempty"`
 	StartingAfter int      `url:"starting_after,omitempty"`
 }
