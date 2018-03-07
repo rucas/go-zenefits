@@ -28,7 +28,7 @@ func TestCompaniesService_List(t *testing.T) {
 			len(companies), err)
 	}
 
-	if got, want := companies[0].Departments.Object, "/meta/ref/list"; got != want {
+	if got, want := companies[0].Departments.RefObject, "/core/departments"; got != want {
 		t.Errorf("CompaniesService list is %v, want %v", got, want)
 	}
 }
@@ -75,7 +75,7 @@ func TestCompaniesService_List_expand(t *testing.T) {
 		t.Errorf("CompaniesService list is %v, want %v", len(companies), err)
 	}
 
-	if got, want := companies[0].Departments.Object, "/meta/list"; got != want {
+	if got, want := companies[0].Departments.RefObject, ""; got != want {
 		t.Errorf("CompaniesService list is %v, want %v", got, want)
 	}
 }

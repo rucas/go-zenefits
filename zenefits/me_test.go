@@ -25,7 +25,7 @@ func TestMeService_Get(t *testing.T) {
 		t.Errorf("MeService me is %v, want %v", me, "NOT NIL")
 	}
 
-	if got, want := me.Company.Object, "/meta/ref/detail"; got != want {
+	if got, want := me.Company.RefObject, "/core/companies"; got != want {
 		t.Errorf("MeService list is %v, want %v", got, want)
 	}
 }
@@ -51,7 +51,7 @@ func TestMeService_Get_expand(t *testing.T) {
 		t.Errorf("MeService me is %v, want %v", me, "NOT NIL")
 	}
 
-	if got, want := me.Company.Object, "/core/companies"; got != want {
+	if got, want := me.Company.RefObject, ""; got != want {
 		t.Errorf("MeService list is %v, want %v", got, want)
 	}
 }

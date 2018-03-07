@@ -25,7 +25,7 @@ func TestEmployeeBanksService_List(t *testing.T) {
 		t.Errorf("EmployeeBankservice list is %v, want %v", len(employeeBanks), err)
 	}
 
-	if got, want := employeeBanks[0].Person.Object, "/meta/ref/detail"; got != want {
+	if got, want := employeeBanks[0].Person.RefObject, "/core/people"; got != want {
 		t.Errorf("EmployeeBankservice list is %v, want %v", got, want)
 	}
 }
@@ -72,7 +72,7 @@ func TestEmployeeBanksService_List_expand(t *testing.T) {
 		t.Errorf("EmployeeBankservice list is %v, want %v", len(employeeBanks), err)
 	}
 
-	if got, want := employeeBanks[0].Person.Object, "/core/people"; got != want {
+	if got, want := employeeBanks[0].Person.RefObject, ""; got != want {
 		t.Errorf("EmployeeBankservice list is %v, want %v", got, want)
 	}
 }
