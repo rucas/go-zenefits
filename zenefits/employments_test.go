@@ -24,6 +24,10 @@ func TestEmploymentsService_List(t *testing.T) {
 	if len(employments) == 0 {
 		t.Errorf("EmploymentService list is %v, want %v", len(employments), err)
 	}
+
+	if got, want := employments[0].Person.RefObject, "/core/people"; got != want {
+		t.Errorf("EmploymentService list is %v, want %v", got, want)
+	}
 }
 
 func TestEmploymentsService_List_specificEmployments(t *testing.T) {
@@ -31,10 +35,7 @@ func TestEmploymentsService_List_specificEmployments(t *testing.T) {
 	tc := oauth2.NewClient(nil, ts)
 	c := NewClient(tc)
 
-	qs := &EmploymentQueryParams{
-		EmploymentsFilters{1851863},
-		Expansion{},
-	}
+	qs := &EmploymentQueryParams{Person: 1851863}
 
 	employments, resp, err := c.Employments.List(1851863, qs)
 
@@ -51,16 +52,12 @@ func TestEmploymentsService_List_specificEmployments(t *testing.T) {
 	}
 }
 
-// TODO: update this test to make sure company is expanded
 func TestEmploymentsService_List_expand(t *testing.T) {
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: accessToken})
 	tc := oauth2.NewClient(nil, ts)
 	c := NewClient(tc)
 
-	qs := &EmploymentQueryParams{
-		EmploymentsFilters{},
-		Expansion{[]string{"person"}},
-	}
+	qs := &EmploymentQueryParams{Includes: []string{"person"}}
 
 	employments, resp, err := c.Employments.List(1851863, qs)
 
@@ -74,5 +71,9 @@ func TestEmploymentsService_List_expand(t *testing.T) {
 
 	if len(employments) == 0 {
 		t.Errorf("EmploymentService list is %v, want %v", len(employments), err)
+	}
+
+	if got, want := employments[0].Person.RefObject, ""; got != want {
+		t.Errorf("EmploymentService list is %v, want %v", got, want)
 	}
 }

@@ -1,19 +1,12 @@
 package zenefits
 
 import (
-	"os"
-	"strconv"
 	"testing"
 
 	"golang.org/x/oauth2"
 )
 
-var (
-	accessToken  = os.Getenv("ZENEFITS_API_KEY")
-	companyId, _ = strconv.Atoi(os.Getenv("ZENEFITS_COMPANY_ID"))
-)
-
-func TestPeopleService_ListAll(t *testing.T) {
+func TestPeopleService_List(t *testing.T) {
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: accessToken})
 	tc := oauth2.NewClient(nil, ts)
 	c := NewClient(tc)
@@ -31,6 +24,36 @@ func TestPeopleService_ListAll(t *testing.T) {
 	if len(people) == 0 {
 		t.Errorf("PeopleService list is %v, want %v", len(people), err)
 	}
+
+	// TODO: RefObject is not null on non expansions
+	if got, want := people[0].Location.RefObject, "/core/locations"; got != want {
+		t.Errorf("PeopleService list is %v, want %v", got, want)
+	}
+}
+
+func TestPeopleService_List_paginationLimit(t *testing.T) {
+	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: accessToken})
+	tc := oauth2.NewClient(nil, ts)
+	c := NewClient(tc)
+
+	qs := &PeopleQueryParams{Limit: 100}
+	people, resp, err := c.People.List(companyId, qs)
+
+	if resp.StatusCode != 200 {
+		t.Errorf("PeopleService list is %v, want %v", len(people), err)
+	}
+
+	if got := resp.NextPage; got == 0 {
+		t.Errorf("PeopleService Response NextPage is %v, want %v", got, "not 0")
+	}
+
+	if err != nil {
+		t.Errorf("PeopleService list is %v, want %v", len(people), err)
+	}
+
+	if len(people) != 100 {
+		t.Errorf("PeopleService list is %v, want %v", len(people), err)
+	}
 }
 
 func TestPeopleService_List_specificPeople(t *testing.T) {
@@ -38,8 +61,7 @@ func TestPeopleService_List_specificPeople(t *testing.T) {
 	tc := oauth2.NewClient(nil, ts)
 	c := NewClient(tc)
 
-	f := PeopleFilters{FirstName: "John"}
-	queryparams := &PeopleQueryParams{PeopleFilters: f}
+	queryparams := &PeopleQueryParams{FirstName: "John"}
 	people, resp, err := c.People.List(companyId, queryparams)
 
 	if resp.StatusCode != 200 {
@@ -55,14 +77,12 @@ func TestPeopleService_List_specificPeople(t *testing.T) {
 	}
 }
 
-// TODO: update this test to make sure banks and location is expanded
 func TestPeopleService_List_expand(t *testing.T) {
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: accessToken})
 	tc := oauth2.NewClient(nil, ts)
 	c := NewClient(tc)
 
-	e := Expansion{[]string{"banks", "location"}}
-	queryparams := &PeopleQueryParams{Expansion: e}
+	queryparams := &PeopleQueryParams{Includes: []string{"location"}}
 
 	people, resp, err := c.People.List(companyId, queryparams)
 
@@ -77,24 +97,9 @@ func TestPeopleService_List_expand(t *testing.T) {
 	if len(people) == 0 {
 		t.Errorf("PeopleService list is %v, want %v", len(people), err)
 	}
-}
 
-func TestPeopleService_Get(t *testing.T) {
-	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: accessToken})
-	tc := oauth2.NewClient(nil, ts)
-	c := NewClient(tc)
-
-	people, resp, err := c.People.Get(166216, nil)
-
-	if resp.StatusCode != 200 {
-		t.Errorf("PeopleService list is %v, want %v", people, err)
+	// TODO: Should perform this check for all expands
+	if got, want := people[0].Location.RefObject, ""; got != want {
+		t.Errorf("PeopleService list is %v, want %v", got, want)
 	}
-
-	/*if err != nil {
-		t.Errorf("PeopleService list is %v, want %v", people, err)
-	}*/
-
-	/*if len(people) == 0 {
-		t.Errorf("PeopleService list is %v, want %v", len(people), err)
-	}*/
 }

@@ -2,26 +2,25 @@ package zenefits
 
 import (
 	"fmt"
-	"net/http"
 )
 
 type CompanyBanksService service
 
 type CompanyBanks struct {
-	AccountNumber string `json:"account_number"`
-	BankName      string `json:"bank_name"`
-	Company       Ref    `json:"company"`
-	Id            string `json:"id"`
-	RoutingNumber string `json:"routing_number"`
-}
-
-type CompanyBanksFilters struct {
-	Company int `url:"company,omitempty"`
+	AccountNumber string     `json:"account_number"`
+	BankName      string     `json:"bank_name"`
+	Company       CompanyRef `json:"company"`
+	Id            string     `json:"id"`
+	RefObject     string     `json:"ref_object"`
+	RoutingNumber string     `json:"routing_number"`
 }
 
 type CompanyBanksQueryParams struct {
-	CompanyBanksFilters
-	Expansion
+	Company       int      `url:"company,omitempty"`
+	EndingBefore  int      `url:"ending_before,omitempty"`
+	Includes      []string `url:"includes,omitempty"`
+	Limit         int      `url:"limit,omitempty"`
+	StartingAfter int      `url:"starting_after,omitempty"`
 }
 
 // TODO: GET http://api.zenefits.com/core/company_banks/{:bank_id}
@@ -31,7 +30,7 @@ type CompanyBanksQueryParams struct {
 // (note access tokens are unique per company, so this will be the same as the main endpoint)
 // TODO: http://api.zenefits.com/core/company_banks
 
-func (s *CompanyBanksService) List(companyId int, opt *CompanyBanksQueryParams) ([]*CompanyBanks, *http.Response, error) {
+func (s *CompanyBanksService) List(companyId int, opt *CompanyBanksQueryParams) ([]*CompanyBanks, *Response, error) {
 	u := fmt.Sprintf("core/companies/%d/company_banks", companyId)
 	u, err := addOptions(u, opt)
 	req, err := s.client.NewRequest("GET", u, nil)
@@ -40,7 +39,7 @@ func (s *CompanyBanksService) List(companyId int, opt *CompanyBanksQueryParams) 
 	}
 
 	var banks []*CompanyBanks
-	b := addPaginationBody(&banks)
+	b := addMeta(&banks)
 	resp, err := s.client.Do(req, &b)
 
 	if err != nil {

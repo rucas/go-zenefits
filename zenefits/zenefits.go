@@ -5,6 +5,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"strconv"
 
 	"github.com/google/go-querystring/query"
 )
@@ -15,9 +16,10 @@ const (
 )
 
 type Client struct {
-	client    *http.Client
 	BaseURL   *url.URL
 	UserAgent string
+
+	client *http.Client
 
 	common        service // Reuse a single struct instead of allocating one for each service on the heap.
 	People        *PeopleService
@@ -27,40 +29,19 @@ type Client struct {
 	EmployeeBanks *EmployeeBanksService
 	CompanyBanks  *CompanyBanksService
 	Locations     *LocationsService
+	Me            *MeService
 }
 
 type service struct {
 	client *Client
 }
 
-type Expansion struct {
-	Includes []string `url:"includes,omitempty"`
-}
+// Response is a Zenefits response.
+type Response struct {
+	*http.Response
 
-type Pagination struct {
-	Limit         int `url:"limit,omitempty"`
-	StartingAfter int `url:"starting_after,omitempty"`
-	EndingBefore  int `url:"ending_before,omitempty"`
-}
-
-type Ref struct {
-	Url       string `json:"url"`
-	Object    string `json:"object"`
-	RefObject string `json:"ref_object"`
-}
-
-type Page struct {
-	Url     string      `json:"url"`
-	NextUrl string      `json:"next_url"`
-	Object  string      `json:"object"`
-	Data    interface{} `json:"data"`
-}
-
-type MetaResponse struct {
-	Status int    `json:"status"`
-	Object string `json:"object"`
-	Page   Page   `json:"data"`
-	//Data   interface{} `json:"data"`
+	NextPage int
+	PrevPage int
 }
 
 func NewClient(httpClient *http.Client) *Client {
@@ -77,13 +58,14 @@ func NewClient(httpClient *http.Client) *Client {
 
 	// (*Point)(p) // p is converted to *Point
 	// service is converted to people service and allocated
-	c.People = (*PeopleService)(&c.common)
 	c.Companies = (*CompaniesService)(&c.common)
-	c.Departments = (*DepartmentsService)(&c.common)
-	c.Employments = (*EmploymentsService)(&c.common)
-	c.EmployeeBanks = (*EmployeeBanksService)(&c.common)
 	c.CompanyBanks = (*CompanyBanksService)(&c.common)
+	c.Departments = (*DepartmentsService)(&c.common)
+	c.EmployeeBanks = (*EmployeeBanksService)(&c.common)
+	c.Employments = (*EmploymentsService)(&c.common)
 	c.Locations = (*LocationsService)(&c.common)
+	c.Me = (*MeService)(&c.common)
+	c.People = (*PeopleService)(&c.common)
 	return c
 }
 
@@ -101,23 +83,28 @@ func (c *Client) NewRequest(method, path string, body interface{}) (*http.Reques
 	return req, nil
 }
 
-func (c *Client) Do(req *http.Request, v interface{}) (*http.Response, error) {
+func (c *Client) Do(req *http.Request, v interface{}) (*Response, error) {
 	resp, err := c.client.Do(req)
 	if err != nil {
 		return nil, err
 	}
 	defer resp.Body.Close()
 
-	//valium := MetaResponse{Page: Page{Data: v}}
-	//err = json.NewDecoder(resp.Body).Decode(&valium)
 	err = json.NewDecoder(resp.Body).Decode(v)
-	return resp, err
+	nresp := newResponse(resp, v)
+	return nresp, err
 }
 
-func addPaginationBody(v interface{}) MetaResponse {
-	return MetaResponse{
-		Page: Page{Data: v},
+func newResponse(r *http.Response, v interface{}) *Response {
+	resp := &Response{Response: r}
+	if meta, ok := v.(*MetaResponse); ok && meta.Page.NextUrl != "" {
+		u, _ := url.Parse(meta.Page.NextUrl)
+		s := u.Query().Get("starting_after")
+		b := u.Query().Get("ending_before")
+		resp.NextPage, _ = strconv.Atoi(s)
+		resp.PrevPage, _ = strconv.Atoi(b)
 	}
+	return resp
 }
 
 func addOptions(s string, opt interface{}) (string, error) {

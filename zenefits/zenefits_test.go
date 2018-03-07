@@ -3,8 +3,15 @@ package zenefits
 
 import (
 	"io"
+	"os"
 	"reflect"
+	"strconv"
 	"testing"
+)
+
+var (
+	accessToken  = os.Getenv("ZENEFITS_API_KEY")
+	companyId, _ = strconv.Atoi(os.Getenv("ZENEFITS_COMPANY_ID"))
 )
 
 func TestZenefits_NewClient(t *testing.T) {
@@ -47,7 +54,7 @@ func TestZenefits_NewRequest(t *testing.T) {
 
 func TestZenefits_addPaginationBody(t *testing.T) {
 	var people []*People
-	b := addPaginationBody(people)
+	b := addMeta(people)
 	if !reflect.DeepEqual(b.Page.Data, people) {
 		t.Errorf("PaginationBody page data body = %v, want = %v", b.Page.Data, people)
 	}
@@ -86,3 +93,7 @@ func TestZenefits_addOptions(t *testing.T) {
 		t.Errorf("addOptions is %v, want %v", got, want)
 	}
 }
+
+/*func TestZenefits_addMetaRefs(t *testing.T) {
+	var companies []*Companies
+}*/
