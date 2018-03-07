@@ -5,6 +5,7 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+	"strconv"
 
 	"github.com/google/go-querystring/query"
 )
@@ -15,9 +16,10 @@ const (
 )
 
 type Client struct {
-	client    *http.Client
 	BaseURL   *url.URL
 	UserAgent string
+
+	client *http.Client
 
 	common        service // Reuse a single struct instead of allocating one for each service on the heap.
 	People        *PeopleService
@@ -32,6 +34,14 @@ type Client struct {
 
 type service struct {
 	client *Client
+}
+
+// Response is a Zenefits response.
+type Response struct {
+	*http.Response
+
+	NextPage int
+	PrevPage int
 }
 
 func NewClient(httpClient *http.Client) *Client {
@@ -73,7 +83,7 @@ func (c *Client) NewRequest(method, path string, body interface{}) (*http.Reques
 	return req, nil
 }
 
-func (c *Client) Do(req *http.Request, v interface{}) (*http.Response, error) {
+func (c *Client) Do(req *http.Request, v interface{}) (*Response, error) {
 	resp, err := c.client.Do(req)
 	if err != nil {
 		return nil, err
@@ -81,13 +91,20 @@ func (c *Client) Do(req *http.Request, v interface{}) (*http.Response, error) {
 	defer resp.Body.Close()
 
 	err = json.NewDecoder(resp.Body).Decode(v)
-	return resp, err
+	nresp := newResponse(resp, v)
+	return nresp, err
 }
 
-func addPaginationBody(v interface{}) MetaResponse {
-	return MetaResponse{
-		Page: MetaList{Data: v},
+func newResponse(r *http.Response, v interface{}) *Response {
+	resp := &Response{Response: r}
+	if meta, ok := v.(*MetaResponse); ok && meta.Page.NextUrl != "" {
+		u, _ := url.Parse(meta.Page.NextUrl)
+		s := u.Query().Get("starting_after")
+		b := u.Query().Get("ending_before")
+		resp.NextPage, _ = strconv.Atoi(s)
+		resp.PrevPage, _ = strconv.Atoi(b)
 	}
+	return resp
 }
 
 func addOptions(s string, opt interface{}) (string, error) {

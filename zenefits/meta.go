@@ -23,11 +23,16 @@ type MetaResponse struct {
 	Object string   `json:"object"`
 	Page   MetaList `json:"data"`
 	Status int      `json:"status"`
-	// Data   interface{} `json:"data"`
 	// TODO: Error
 }
 
 type CompanyRef struct {
 	Companies
 	MetaRef
+}
+
+func addMeta(v interface{}) MetaResponse {
+	return MetaResponse{
+		Page: MetaList{Data: v},
+	}
 }

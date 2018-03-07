@@ -35,7 +35,7 @@ func TestEmployeeBanksService_List_specificEmployee(t *testing.T) {
 	tc := oauth2.NewClient(nil, ts)
 	c := NewClient(tc)
 
-	qs := &EmployeeBanksQueryParams{1851863, nil}
+	qs := &EmployeeBanksQueryParams{Person: 1851863}
 
 	employeeBanks, resp, err := c.EmployeeBanks.List(1851863, qs)
 

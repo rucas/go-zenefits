@@ -2,7 +2,6 @@ package zenefits
 
 import (
 	"fmt"
-	"net/http"
 )
 
 type DepartmentsService service
@@ -18,9 +17,12 @@ type Departments struct {
 }
 
 type DepartmentQueryParams struct {
-	Company  int      `url:"company,omitempty"`
-	Name     string   `url:"name,omitempty"`
-	Includes []string `url:"includes,omitempty"`
+	Company       int      `url:"company,omitempty"`
+	EndingBefore  int      `url:"ending_before,omitempty"`
+	Includes      []string `url:"includes,omitempty"`
+	Limit         int      `url:"limit,omitempty"`
+	Name          string   `url:"name,omitempty"`
+	StartingAfter int      `url:"starting_after,omitempty"`
 }
 
 // TODO: GET http://api.zenefits.com/core/departments/{:department_id}
@@ -29,7 +31,7 @@ type DepartmentQueryParams struct {
 // Once zenefits changes their api to one token per multiple companies
 // http://api.zenefits.com/core/departments
 
-func (s *DepartmentsService) List(companyId int, opt *DepartmentQueryParams) ([]*Departments, *http.Response, error) {
+func (s *DepartmentsService) List(companyId int, opt *DepartmentQueryParams) ([]*Departments, *Response, error) {
 	u := fmt.Sprintf("core/companies/%d/departments", companyId)
 	u, err := addOptions(u, opt)
 	req, err := s.client.NewRequest("GET", u, nil)
@@ -38,7 +40,7 @@ func (s *DepartmentsService) List(companyId int, opt *DepartmentQueryParams) ([]
 		return nil, nil, err
 	}
 	var departments []*Departments
-	b := addPaginationBody(&departments)
+	b := addMeta(&departments)
 	resp, err := s.client.Do(req, &b)
 
 	if err != nil {

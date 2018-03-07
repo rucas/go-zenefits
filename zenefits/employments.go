@@ -2,7 +2,6 @@ package zenefits
 
 import (
 	"fmt"
-	"net/http"
 )
 
 type EmploymentsService service
@@ -24,13 +23,16 @@ type Employments struct {
 }
 
 type EmploymentQueryParams struct {
-	Person   int      `url:"person,omitempty"`
-	Includes []string `url:"includes,omitempty"`
+	EndingBefore  int      `url:"ending_before,omitempty"`
+	Includes      []string `url:"includes,omitempty"`
+	Limit         int      `url:"limit,omitempty"`
+	Person        int      `url:"person,omitempty"`
+	StartingAfter int      `url:"starting_after,omitempty"`
 }
 
 // TODO: https://api.zenefits.com/core/employments/{:employment_id}
 
-func (s *EmploymentsService) List(personId int, opt *EmploymentQueryParams) ([]*Employments, *http.Response, error) {
+func (s *EmploymentsService) List(personId int, opt *EmploymentQueryParams) ([]*Employments, *Response, error) {
 	u := fmt.Sprintf("core/people/%d/employments", personId)
 	u, err := addOptions(u, opt)
 	req, err := s.client.NewRequest("GET", u, nil)
@@ -40,7 +42,7 @@ func (s *EmploymentsService) List(personId int, opt *EmploymentQueryParams) ([]*
 	}
 
 	var employments []*Employments
-	b := addPaginationBody(&employments)
+	b := addMeta(&employments)
 	resp, err := s.client.Do(req, &b)
 
 	if err != nil {

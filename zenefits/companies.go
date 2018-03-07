@@ -1,9 +1,5 @@
 package zenefits
 
-import (
-	"net/http"
-)
-
 type CompaniesService service
 
 type Companies struct {
@@ -43,13 +39,16 @@ type LocationsRef struct {
 
 // TODO: looks like it can only be one include
 type CompaniesQueryParams struct {
-	Name     string   `url:"name,omitempty"`
-	Includes []string `url:"includes,omitempty"`
+	EndingBefore  int      `url:"ending_before,omitempty"`
+	Includes      []string `url:"includes,omitempty"`
+	Limit         int      `url:"limit,omitempty"`
+	Name          string   `url:"name,omitempty"`
+	StartingAfter int      `url:"starting_after,omitempty"`
 }
 
 // TODO: GET http://api.zenefits.com/core/companies/{:id}
 
-func (s *CompaniesService) List(opt *CompaniesQueryParams) ([]*Companies, *http.Response, error) {
+func (s *CompaniesService) List(opt *CompaniesQueryParams) ([]*Companies, *Response, error) {
 	u, err := addOptions("core/companies", opt)
 	req, err := s.client.NewRequest("GET", u, nil)
 
@@ -58,7 +57,7 @@ func (s *CompaniesService) List(opt *CompaniesQueryParams) ([]*Companies, *http.
 	}
 
 	var companies []*Companies
-	b := addPaginationBody(&companies)
+	b := addMeta(&companies)
 	resp, err := s.client.Do(req, &b)
 
 	if err != nil {

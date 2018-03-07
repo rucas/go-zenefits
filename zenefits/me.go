@@ -1,7 +1,6 @@
 package zenefits
 
 import (
-	"net/http"
 	"time"
 )
 
@@ -20,10 +19,13 @@ type Me struct {
 }
 
 type MeQueryParams struct {
-	Includes []string `url:"includes,omitempty"`
+	EndingBefore  int      `url:"ending_before,omitempty"`
+	Includes      []string `url:"includes,omitempty"`
+	Limit         int      `url:"limit,omitempty"`
+	StartingAfter int      `url:"starting_after,omitempty"`
 }
 
-func (s *MeService) Get(opt *MeQueryParams) (*Me, *http.Response, error) {
+func (s *MeService) Get(opt *MeQueryParams) (*Me, *Response, error) {
 	u, err := addOptions("core/me", opt)
 	req, err := s.client.NewRequest("GET", u, nil)
 

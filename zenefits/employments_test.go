@@ -35,7 +35,7 @@ func TestEmploymentsService_List_specificEmployments(t *testing.T) {
 	tc := oauth2.NewClient(nil, ts)
 	c := NewClient(tc)
 
-	qs := &EmploymentQueryParams{1851863, nil}
+	qs := &EmploymentQueryParams{Person: 1851863}
 
 	employments, resp, err := c.Employments.List(1851863, qs)
 

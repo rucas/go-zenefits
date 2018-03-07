@@ -54,7 +54,7 @@ func TestZenefits_NewRequest(t *testing.T) {
 
 func TestZenefits_addPaginationBody(t *testing.T) {
 	var people []*People
-	b := addPaginationBody(people)
+	b := addMeta(people)
 	if !reflect.DeepEqual(b.Page.Data, people) {
 		t.Errorf("PaginationBody page data body = %v, want = %v", b.Page.Data, people)
 	}
