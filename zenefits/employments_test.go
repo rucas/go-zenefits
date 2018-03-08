@@ -1,17 +1,19 @@
 package zenefits
 
 import (
+	"context"
 	"testing"
 
 	"golang.org/x/oauth2"
 )
 
 func TestEmploymentsService_List(t *testing.T) {
+	ctx := context.Background()
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: accessToken})
-	tc := oauth2.NewClient(nil, ts)
+	tc := oauth2.NewClient(ctx, ts)
 	c := NewClient(tc)
 
-	employments, resp, err := c.Employments.List(1851863, nil)
+	employments, resp, err := c.Employments.List(ctx, 1851863, nil)
 
 	if resp.StatusCode != 200 {
 		t.Errorf("EmploymentService list is %v, want %v", len(employments), err)
@@ -31,13 +33,13 @@ func TestEmploymentsService_List(t *testing.T) {
 }
 
 func TestEmploymentsService_List_specificEmployments(t *testing.T) {
+	ctx := context.Background()
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: accessToken})
-	tc := oauth2.NewClient(nil, ts)
+	tc := oauth2.NewClient(ctx, ts)
 	c := NewClient(tc)
 
 	qs := &EmploymentQueryParams{Person: 1851863}
-
-	employments, resp, err := c.Employments.List(1851863, qs)
+	employments, resp, err := c.Employments.List(ctx, 1851863, qs)
 
 	if resp.StatusCode != 200 {
 		t.Errorf("EmploymentService list is %v, want %v", len(employments), err)
@@ -53,13 +55,13 @@ func TestEmploymentsService_List_specificEmployments(t *testing.T) {
 }
 
 func TestEmploymentsService_List_expand(t *testing.T) {
+	ctx := context.Background()
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: accessToken})
-	tc := oauth2.NewClient(nil, ts)
+	tc := oauth2.NewClient(ctx, ts)
 	c := NewClient(tc)
 
 	qs := &EmploymentQueryParams{Includes: []string{"person"}}
-
-	employments, resp, err := c.Employments.List(1851863, qs)
+	employments, resp, err := c.Employments.List(ctx, 1851863, qs)
 
 	if resp.StatusCode != 200 {
 		t.Errorf("EmploymentService list is %v, want %v", len(employments), err)

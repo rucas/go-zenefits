@@ -2,6 +2,7 @@
 package zenefits
 
 import (
+	"context"
 	"io"
 	"os"
 	"reflect"
@@ -61,13 +62,14 @@ func TestZenefits_addMeta(t *testing.T) {
 }
 
 func TestZenefits_Do(t *testing.T) {
+	ctx := context.Background()
 	c := NewClient(nil)
 	r, _ := c.NewRequest("GET", "/core/me", nil)
 	type foo struct {
 		foobar int
 	}
 	body := &foo{}
-	c.Do(r, body)
+	c.Do(ctx, r, body)
 	want := &foo{}
 	if !reflect.DeepEqual(body, want) {
 		t.Errorf("Response body = %v, want = %v", body, want)

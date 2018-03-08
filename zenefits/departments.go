@@ -1,6 +1,7 @@
 package zenefits
 
 import (
+	"context"
 	"fmt"
 )
 
@@ -31,7 +32,7 @@ type DepartmentQueryParams struct {
 // Once zenefits changes their api to one token per multiple companies
 // http://api.zenefits.com/core/departments
 
-func (s *DepartmentsService) List(companyId int, opt *DepartmentQueryParams) ([]*Departments, *Response, error) {
+func (s *DepartmentsService) List(ctx context.Context, companyId int, opt *DepartmentQueryParams) ([]*Departments, *Response, error) {
 	u := fmt.Sprintf("core/companies/%d/departments", companyId)
 	u, err := addOptions(u, opt)
 	req, err := s.client.NewRequest("GET", u, nil)
@@ -41,7 +42,7 @@ func (s *DepartmentsService) List(companyId int, opt *DepartmentQueryParams) ([]
 	}
 	var departments []*Departments
 	b := addMeta(&departments)
-	resp, err := s.client.Do(req, &b)
+	resp, err := s.client.Do(ctx, req, &b)
 
 	if err != nil {
 		return nil, resp, err

@@ -1,6 +1,7 @@
 package zenefits
 
 import (
+	"context"
 	"fmt"
 )
 
@@ -32,7 +33,7 @@ type EmploymentQueryParams struct {
 
 // TODO: https://api.zenefits.com/core/employments/{:employment_id}
 
-func (s *EmploymentsService) List(personId int, opt *EmploymentQueryParams) ([]*Employments, *Response, error) {
+func (s *EmploymentsService) List(ctx context.Context, personId int, opt *EmploymentQueryParams) ([]*Employments, *Response, error) {
 	u := fmt.Sprintf("core/people/%d/employments", personId)
 	u, err := addOptions(u, opt)
 	req, err := s.client.NewRequest("GET", u, nil)
@@ -43,7 +44,7 @@ func (s *EmploymentsService) List(personId int, opt *EmploymentQueryParams) ([]*
 
 	var employments []*Employments
 	b := addMeta(&employments)
-	resp, err := s.client.Do(req, &b)
+	resp, err := s.client.Do(ctx, req, &b)
 
 	if err != nil {
 		return nil, resp, err

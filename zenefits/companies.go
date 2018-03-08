@@ -1,5 +1,7 @@
 package zenefits
 
+import "context"
+
 type CompaniesService service
 
 type Companies struct {
@@ -47,7 +49,7 @@ type CompaniesQueryParams struct {
 
 // TODO: GET http://api.zenefits.com/core/companies/{:id}
 
-func (s *CompaniesService) List(opt *CompaniesQueryParams) ([]*Companies, *Response, error) {
+func (s *CompaniesService) List(ctx context.Context, opt *CompaniesQueryParams) ([]*Companies, *Response, error) {
 	u, err := addOptions("core/companies", opt)
 	req, err := s.client.NewRequest("GET", u, nil)
 
@@ -57,7 +59,7 @@ func (s *CompaniesService) List(opt *CompaniesQueryParams) ([]*Companies, *Respo
 
 	var companies []*Companies
 	b := addMeta(&companies)
-	resp, err := s.client.Do(req, &b)
+	resp, err := s.client.Do(ctx, req, &b)
 
 	if err != nil {
 		return nil, resp, err

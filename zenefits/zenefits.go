@@ -1,6 +1,7 @@
 package zenefits
 
 import (
+	"context"
 	"encoding/json"
 	"io"
 	"net/http"
@@ -20,8 +21,10 @@ type Client struct {
 	UserAgent string
 
 	client *http.Client
-
-	common        service // Reuse a single struct instead of allocating one for each service on the heap.
+	// Reuse a single struct (service)
+	// instead of allocating one for each
+	// service on the heap.
+	common        service
 	People        *PeopleService
 	Companies     *CompaniesService
 	Departments   *DepartmentsService
@@ -83,7 +86,8 @@ func (c *Client) NewRequest(method, path string, body interface{}) (*http.Reques
 	return req, nil
 }
 
-func (c *Client) Do(req *http.Request, v interface{}) (*Response, error) {
+func (c *Client) Do(ctx context.Context, req *http.Request, v interface{}) (*Response, error) {
+	req = req.WithContext(ctx)
 	resp, err := c.client.Do(req)
 	if err != nil {
 		return nil, err

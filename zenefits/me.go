@@ -1,6 +1,7 @@
 package zenefits
 
 import (
+	"context"
 	"time"
 )
 
@@ -25,7 +26,7 @@ type MeQueryParams struct {
 	StartingAfter int      `url:"starting_after,omitempty"`
 }
 
-func (s *MeService) Get(opt *MeQueryParams) (*Me, *Response, error) {
+func (s *MeService) Get(ctx context.Context, opt *MeQueryParams) (*Me, *Response, error) {
 	u, err := addOptions("core/me", opt)
 	req, err := s.client.NewRequest("GET", u, nil)
 
@@ -43,7 +44,7 @@ func (s *MeService) Get(opt *MeQueryParams) (*Me, *Response, error) {
 	}
 
 	b := response{Data: &me}
-	resp, err := s.client.Do(req, &b)
+	resp, err := s.client.Do(ctx, req, &b)
 
 	if err != nil {
 		return nil, resp, err

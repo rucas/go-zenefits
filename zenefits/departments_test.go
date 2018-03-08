@@ -1,17 +1,19 @@
 package zenefits
 
 import (
+	"context"
 	"testing"
 
 	"golang.org/x/oauth2"
 )
 
 func TestDepartmentsService_List(t *testing.T) {
+	ctx := context.Background()
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: accessToken})
-	tc := oauth2.NewClient(nil, ts)
+	tc := oauth2.NewClient(ctx, ts)
 	c := NewClient(tc)
 
-	departments, resp, err := c.Departments.List(companyId, nil)
+	departments, resp, err := c.Departments.List(ctx, companyId, nil)
 
 	if resp.StatusCode != 200 {
 		t.Errorf("DepartmentService list is %v, want %v", len(departments), err)
@@ -31,13 +33,13 @@ func TestDepartmentsService_List(t *testing.T) {
 }
 
 func TestDepartmentsService_List_specificDepartments(t *testing.T) {
+	ctx := context.Background()
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: accessToken})
-	tc := oauth2.NewClient(nil, ts)
+	tc := oauth2.NewClient(ctx, ts)
 	c := NewClient(tc)
 
 	qs := &DepartmentQueryParams{Name: "foobarbuzz"}
-
-	departments, resp, err := c.Departments.List(companyId, qs)
+	departments, resp, err := c.Departments.List(ctx, companyId, qs)
 
 	if resp.StatusCode != 200 {
 		t.Errorf("DepartmentService list is %v, want %v", len(departments), err)
@@ -53,12 +55,13 @@ func TestDepartmentsService_List_specificDepartments(t *testing.T) {
 }
 
 func TestDepartmentsService_List_expand(t *testing.T) {
+	ctx := context.Background()
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: accessToken})
-	tc := oauth2.NewClient(nil, ts)
+	tc := oauth2.NewClient(ctx, ts)
 	c := NewClient(tc)
 
 	qs := &DepartmentQueryParams{Includes: []string{"company"}}
-	departments, resp, err := c.Departments.List(companyId, qs)
+	departments, resp, err := c.Departments.List(ctx, companyId, qs)
 
 	if resp.StatusCode != 200 {
 		t.Errorf("DepartmentService list is %v, want %v", len(departments), err)
