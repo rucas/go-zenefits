@@ -1,4 +1,3 @@
-// Package  provides ...
 package zenefits
 
 import (
@@ -13,6 +12,7 @@ import (
 var (
 	accessToken  = os.Getenv("ZENEFITS_API_KEY")
 	companyId, _ = strconv.Atoi(os.Getenv("ZENEFITS_COMPANY_ID"))
+	personId, _  = strconv.Atoi(os.Getenv("ZENEFITS_PERSON_ID"))
 )
 
 func TestZenefits_NewClient(t *testing.T) {

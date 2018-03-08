@@ -41,7 +41,7 @@ func TestCompaniesService_List_specificCompanies(t *testing.T) {
 	tc := oauth2.NewClient(ctx, ts)
 	c := NewClient(tc)
 
-	qs := &CompaniesQueryParams{Name: "lucas"}
+	qs := &CompaniesQueryParams{Name: "rucas industries"}
 
 	companies, resp, err := c.Companies.List(ctx, qs)
 

@@ -13,7 +13,7 @@ func TestEmploymentsService_List(t *testing.T) {
 	tc := oauth2.NewClient(ctx, ts)
 	c := NewClient(tc)
 
-	employments, resp, err := c.Employments.List(ctx, 1851863, nil)
+	employments, resp, err := c.Employments.List(ctx, personId, nil)
 
 	if resp.StatusCode != 200 {
 		t.Errorf("EmploymentService list is %v, want %v", len(employments), err)
@@ -38,8 +38,8 @@ func TestEmploymentsService_List_specificEmployments(t *testing.T) {
 	tc := oauth2.NewClient(ctx, ts)
 	c := NewClient(tc)
 
-	qs := &EmploymentQueryParams{Person: 1851863}
-	employments, resp, err := c.Employments.List(ctx, 1851863, qs)
+	qs := &EmploymentQueryParams{Person: personId}
+	employments, resp, err := c.Employments.List(ctx, personId, qs)
 
 	if resp.StatusCode != 200 {
 		t.Errorf("EmploymentService list is %v, want %v", len(employments), err)
@@ -61,7 +61,7 @@ func TestEmploymentsService_List_expand(t *testing.T) {
 	c := NewClient(tc)
 
 	qs := &EmploymentQueryParams{Includes: []string{"person"}}
-	employments, resp, err := c.Employments.List(ctx, 1851863, qs)
+	employments, resp, err := c.Employments.List(ctx, personId, qs)
 
 	if resp.StatusCode != 200 {
 		t.Errorf("EmploymentService list is %v, want %v", len(employments), err)
