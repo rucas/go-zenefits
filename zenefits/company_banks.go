@@ -1,6 +1,7 @@
 package zenefits
 
 import (
+	"context"
 	"fmt"
 )
 
@@ -18,7 +19,7 @@ type CompanyBanks struct {
 type CompanyBanksQueryParams struct {
 	Company       int      `url:"company,omitempty"`
 	EndingBefore  int      `url:"ending_before,omitempty"`
-	Includes      []string `url:"includes,omitempty"`
+	Includes      []string `url:"includes,space,omitempty"`
 	Limit         int      `url:"limit,omitempty"`
 	StartingAfter int      `url:"starting_after,omitempty"`
 }
@@ -30,7 +31,7 @@ type CompanyBanksQueryParams struct {
 // (note access tokens are unique per company, so this will be the same as the main endpoint)
 // TODO: http://api.zenefits.com/core/company_banks
 
-func (s *CompanyBanksService) List(companyId int, opt *CompanyBanksQueryParams) ([]*CompanyBanks, *Response, error) {
+func (s *CompanyBanksService) List(ctx context.Context, companyId int, opt *CompanyBanksQueryParams) ([]*CompanyBanks, *Response, error) {
 	u := fmt.Sprintf("core/companies/%d/company_banks", companyId)
 	u, err := addOptions(u, opt)
 	req, err := s.client.NewRequest("GET", u, nil)
@@ -40,7 +41,7 @@ func (s *CompanyBanksService) List(companyId int, opt *CompanyBanksQueryParams) 
 
 	var banks []*CompanyBanks
 	b := addMeta(&banks)
-	resp, err := s.client.Do(req, &b)
+	resp, err := s.client.Do(ctx, req, &b)
 
 	if err != nil {
 		return nil, resp, err
