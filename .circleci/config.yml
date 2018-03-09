@@ -5,7 +5,7 @@ jobs:
       - image: circleci/golang:1.10
 
     # NOTE: need to change rucas->instrument
-    working_directory: /go/src/github.com/rucas/zenefits
+    working_directory: /go/src/github.com/instrument/zenefits
 
     environment:
       TEST_RESULTS: /tmp/test-results
