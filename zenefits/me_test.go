@@ -1,17 +1,19 @@
 package zenefits
 
 import (
+	"context"
 	"testing"
 
 	"golang.org/x/oauth2"
 )
 
 func TestMeService_Get(t *testing.T) {
+	ctx := context.Background()
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: accessToken})
-	tc := oauth2.NewClient(nil, ts)
+	tc := oauth2.NewClient(ctx, ts)
 	c := NewClient(tc)
 
-	me, resp, err := c.Me.Get(nil)
+	me, resp, err := c.Me.Get(ctx, nil)
 
 	if resp.StatusCode != 200 {
 		t.Errorf("MeService list is %v, want %v", me, err)
@@ -31,13 +33,13 @@ func TestMeService_Get(t *testing.T) {
 }
 
 func TestMeService_Get_expand(t *testing.T) {
+	ctx := context.Background()
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: accessToken})
-	tc := oauth2.NewClient(nil, ts)
+	tc := oauth2.NewClient(ctx, ts)
 	c := NewClient(tc)
 
 	qs := &MeQueryParams{Includes: []string{"company"}}
-
-	me, resp, err := c.Me.Get(qs)
+	me, resp, err := c.Me.Get(ctx, qs)
 
 	if resp.StatusCode != 200 {
 		t.Errorf("MeService list is %v, want %v", me, err)

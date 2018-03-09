@@ -1,6 +1,7 @@
 package zenefits
 
 import (
+	"context"
 	"fmt"
 )
 
@@ -56,7 +57,7 @@ type PeopleQueryParams struct {
 	Department    int      `url:"department,omitempty"`
 	EndingBefore  int      `url:"ending_before,omitempty"`
 	FirstName     string   `url:"first_name,omitempty"`
-	Includes      []string `url:"includes,omitempty"`
+	Includes      []string `url:"includes,space,omitempty"`
 	LastName      string   `url:"lastname,omitempty"`
 	Limit         int      `url:"limit,omitempty"`
 	Location      int      `url:"location,omitempty"`
@@ -70,7 +71,7 @@ type PeopleQueryParams struct {
 // Once zenefits changes their api to one token per multiple companies
 // http://api.zenefits.com/core/people
 
-func (s *PeopleService) List(companyId int, opt *PeopleQueryParams) ([]*People, *Response, error) {
+func (s *PeopleService) List(ctx context.Context, companyId int, opt *PeopleQueryParams) ([]*People, *Response, error) {
 	u := fmt.Sprintf("core/companies/%d/people", companyId)
 	u, err := addOptions(u, opt)
 	req, err := s.client.NewRequest("GET", u, nil)
@@ -81,7 +82,7 @@ func (s *PeopleService) List(companyId int, opt *PeopleQueryParams) ([]*People, 
 
 	var people []*People
 	b := addMeta(&people)
-	resp, err := s.client.Do(req, &b)
+	resp, err := s.client.Do(ctx, req, &b)
 
 	if err != nil {
 		return nil, resp, err

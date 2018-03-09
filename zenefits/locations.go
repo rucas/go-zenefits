@@ -1,6 +1,7 @@
 package zenefits
 
 import (
+	"context"
 	"fmt"
 )
 
@@ -29,7 +30,7 @@ type Locations struct {
 type LocationQueryParams struct {
 	Company       int      `url:"company,omitempty"`
 	EndingBefore  int      `url:"ending_before,omitempty"`
-	Includes      []string `url:"includes,omitempty"`
+	Includes      []string `url:"includes,space,omitempty"`
 	Limit         int      `url:"limit,omitempty"`
 	Name          string   `url:"name,omitempty"`
 	StartingAfter int      `url:"starting_after,omitempty"`
@@ -38,7 +39,7 @@ type LocationQueryParams struct {
 // TODO: http://api.zenefits.com/core/locations/{:location_id}
 // TODO: http://api.zenefits.com/core/locations
 
-func (s *LocationsService) List(companyId int, opt *LocationQueryParams) ([]*Locations, *Response, error) {
+func (s *LocationsService) List(ctx context.Context, companyId int, opt *LocationQueryParams) ([]*Locations, *Response, error) {
 	u := fmt.Sprintf("core/companies/%d/locations", companyId)
 	u, err := addOptions(u, opt)
 	req, err := s.client.NewRequest("GET", u, nil)
@@ -49,7 +50,7 @@ func (s *LocationsService) List(companyId int, opt *LocationQueryParams) ([]*Loc
 
 	var locations []*Locations
 	b := addMeta(&locations)
-	resp, err := s.client.Do(req, &b)
+	resp, err := s.client.Do(ctx, req, &b)
 
 	if err != nil {
 		return nil, resp, err

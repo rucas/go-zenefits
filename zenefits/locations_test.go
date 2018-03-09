@@ -1,17 +1,19 @@
 package zenefits
 
 import (
+	"context"
 	"testing"
 
 	"golang.org/x/oauth2"
 )
 
 func TestLocationService_List(t *testing.T) {
+	ctx := context.Background()
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: accessToken})
-	tc := oauth2.NewClient(nil, ts)
+	tc := oauth2.NewClient(ctx, ts)
 	c := NewClient(tc)
 
-	locations, resp, err := c.Locations.List(companyId, nil)
+	locations, resp, err := c.Locations.List(ctx, companyId, nil)
 
 	if resp.StatusCode != 200 {
 		t.Errorf("LocationService list is %v, want %v", len(locations), err)
@@ -32,13 +34,13 @@ func TestLocationService_List(t *testing.T) {
 }
 
 func TestLocationService_List_specific(t *testing.T) {
+	ctx := context.Background()
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: accessToken})
-	tc := oauth2.NewClient(nil, ts)
+	tc := oauth2.NewClient(ctx, ts)
 	c := NewClient(tc)
 
 	qs := &LocationQueryParams{Company: 4567}
-
-	locations, resp, err := c.Locations.List(companyId, qs)
+	locations, resp, err := c.Locations.List(ctx, companyId, qs)
 
 	if resp.StatusCode != 200 {
 		t.Errorf("LocationService list is %v, want %v", len(locations), err)
@@ -54,12 +56,13 @@ func TestLocationService_List_specific(t *testing.T) {
 }
 
 func TestLocationService_List_expand(t *testing.T) {
+	ctx := context.Background()
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: accessToken})
-	tc := oauth2.NewClient(nil, ts)
+	tc := oauth2.NewClient(ctx, ts)
 	c := NewClient(tc)
 
 	qs := &LocationQueryParams{Includes: []string{"company"}}
-	locations, resp, err := c.Locations.List(companyId, qs)
+	locations, resp, err := c.Locations.List(ctx, companyId, qs)
 
 	if resp.StatusCode != 200 {
 		t.Errorf("LocationService list is %v, want %v", len(locations), err)

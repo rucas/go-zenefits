@@ -1,0 +1,40 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/golang:1.10
+
+    # NOTE: need to change rucas->instrument
+    working_directory: /go/src/github.com/rucas/zenefits
+
+    environment:
+      TEST_RESULTS: /tmp/test-results
+
+    steps:
+      - checkout
+      - run: mkdir -p $TEST_RESULTS
+
+      - restore_cache:
+          keys:
+            - v1-pkg-cache
+
+      - run: 
+          name: Install dep and junit
+          command: | 
+            go get -u github.com/golang/dep/cmd/dep
+            go get github.com/jstemmer/go-junit-report
+      - run:
+          name: Install dependencies
+          command: |
+            dep ensure
+      - run:
+          name: Run unit-tests
+          command: |
+            go test -v ./zenefits | go-junit-report > ${TEST_RESULTS}/go-test-report.xml
+
+      - store_artifacts:
+          path: /tmp/test-results
+          destination: raw-test-output
+
+      - store_test_results:
+          path: /tmp/test-results
