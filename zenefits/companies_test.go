@@ -42,7 +42,6 @@ func TestCompaniesService_List_specificCompanies(t *testing.T) {
 	c := NewClient(tc)
 
 	qs := &CompaniesQueryParams{Name: "rucas industries"}
-
 	companies, resp, err := c.Companies.List(ctx, qs)
 
 	if resp.StatusCode != 200 {

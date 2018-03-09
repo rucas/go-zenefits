@@ -21,6 +21,7 @@ type Client struct {
 	UserAgent string
 
 	client *http.Client
+
 	// Reuse a single struct (service)
 	// instead of allocating one for each
 	// service on the heap.

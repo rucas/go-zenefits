@@ -27,13 +27,12 @@ func TestPeopleService_List(t *testing.T) {
 		t.Errorf("PeopleService list is %v, want %v", len(people), err)
 	}
 
-	// TODO: RefObject is not null on non expansions
 	if got, want := people[0].Location.RefObject, "/core/locations"; got != want {
 		t.Errorf("PeopleService list is %v, want %v", got, want)
 	}
 }
 
-func TestPeopleService_List_paginationLimit(t *testing.T) {
+func TestPeopleService_List_pagination(t *testing.T) {
 	ctx := context.Background()
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: accessToken})
 	tc := oauth2.NewClient(ctx, ts)
@@ -65,7 +64,6 @@ func TestPeopleService_List_specificPeople(t *testing.T) {
 	tc := oauth2.NewClient(ctx, ts)
 	c := NewClient(tc)
 
-	// NOTE: THIS IS GOING TO BREAK ON Test account
 	queryparams := &PeopleQueryParams{Status: "active"}
 	people, resp, err := c.People.List(ctx, companyId, queryparams)
 
