@@ -39,7 +39,6 @@ type LocationsRef struct {
 	MetaRef
 }
 
-// TODO: looks like it can only be one include
 type CompaniesQueryParams struct {
 	EndingBefore  int      `url:"ending_before,omitempty"`
 	Includes      []string `url:"includes,space,omitempty"`

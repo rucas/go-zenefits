@@ -65,7 +65,7 @@ func TestEmployeeBanksService_List_expand(t *testing.T) {
 	c := NewClient(tc)
 
 	qs := &EmployeeBanksQueryParams{Includes: []string{"person"}}
-	employeeBanks, resp, err := c.EmployeeBanks.List(1851863, qs)
+	employeeBanks, resp, err := c.EmployeeBanks.List(ctx, personId, qs)
 
 	if resp.StatusCode != 200 {
 		t.Errorf("EmployeeBankservice list is %v, want %v", len(employeeBanks), err)
