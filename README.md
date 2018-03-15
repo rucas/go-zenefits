@@ -6,7 +6,26 @@ Go version 1.7 or greater
 ## Usage
 
 ```go
-import "github.com/rucas/go-zenefits/zenefits"
+package main
+
+import (
+	"context"
+	"flag"
+
+	"github.com/rucas/zenefits/zenefits"
+	"golang.org/x/oauth2"
+)
+
+func main() {
+  id := flag.Int("id", 0, "Zenefits Company Id")
+  k := flag.String("key", "", "Zenefits Api Key")
+  flag.Parse()
+  
+  ctx := context.Background()
+  ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: *k})
+  tc := oauth2.NewClient(ctx, ts)
+  client := zenefits.NewClient(tc)
+}
 ```
 
 ## Contributing
