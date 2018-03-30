@@ -90,3 +90,23 @@ func (s *PeopleService) List(ctx context.Context, companyId int, opt *PeopleQuer
 
 	return people, resp, nil
 }
+
+func (s *PeopleService) ListAll(ctx context.Context, opt *PeopleQueryParams) ([]*People, *Response, error) {
+	u := "core/people"
+	u, err := addOptions(u, opt)
+	req, err := s.client.NewRequest("GET", u, nil)
+
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var people []*People
+	b := addMeta(&people)
+	resp, err := s.client.Do(ctx, req, &b)
+
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return people, resp, nil
+}

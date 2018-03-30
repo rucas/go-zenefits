@@ -144,3 +144,28 @@ func TestPeopleService_List_expandMultiple(t *testing.T) {
 		}
 	*/
 }
+
+func TestPeopleService_ListAll(t *testing.T) {
+	ctx := context.Background()
+	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: accessToken})
+	tc := oauth2.NewClient(ctx, ts)
+	c := NewClient(tc)
+
+	people, resp, err := c.People.List(ctx, companyId, nil)
+
+	if resp.StatusCode != 200 {
+		t.Errorf("PeopleService list is %v, want %v", len(people), err)
+	}
+
+	if err != nil {
+		t.Errorf("PeopleService list is %v, want %v", len(people), err)
+	}
+
+	if len(people) == 0 {
+		t.Errorf("PeopleService list is %v, want %v", len(people), err)
+	}
+
+	if got, want := people[0].Location.RefObject, "/core/locations"; got != want {
+		t.Errorf("PeopleService list is %v, want %v", got, want)
+	}
+}
