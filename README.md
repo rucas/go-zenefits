@@ -12,7 +12,7 @@ import (
 	"context"
 	"flag"
 
-	"github.com/rucas/zenefits/zenefits"
+	"github.com/rucas/go-zenefits/zenefits"
 	"golang.org/x/oauth2"
 )
 
